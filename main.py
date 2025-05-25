@@ -21,10 +21,15 @@ streamlit.write("This is a simple stock visualizer app built with Streamlit usin
 # Add a button to show/hide the stock graphs using session_state
 if "show_graph" not in streamlit.session_state:
     streamlit.session_state.show_graph = False
+if "show_data" not in streamlit.session_state:
+    streamlit.session_state.show_data = False   
 
 if streamlit.button("Show/Hide Stock Graphs"):
     streamlit.session_state.show_graph = not streamlit.session_state.show_graph
+if streamlit.button("Show/Hide Stock dataframe"):
+    streamlit.session_state.show_data = not streamlit.session_state.show_data
 
+# Show graphs
 if streamlit.session_state.show_graph:
     # Plot all numeric columns as line charts
     numeric_cols = df.select_dtypes(include='number').columns
@@ -41,4 +46,5 @@ if streamlit.session_state.show_graph:
         streamlit.write("No numeric columns available for plotting.")
 
 # Show dataframe
-streamlit.write("Stock Data", df)
+if streamlit.session_state.show_data:
+    streamlit.write("Stock Data", df)

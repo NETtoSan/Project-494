@@ -7,8 +7,6 @@ import numpy as np
 import sys
 
 # Load stock data
-default_stock = "aot"
-
 def read_stock(name):
     global end_date, start_date, hist, df
     try:
@@ -45,6 +43,8 @@ def read_stock(name):
         
     except:
         st.write(f"Error fetching stock from {name}!")
+
+default_stock = "aot"
 stock_info = read_stock(default_stock)
 
 if stock_info is not None:

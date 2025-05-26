@@ -4,11 +4,9 @@ import yfinance as yf
 import datetime
 from sklearn.linear_model import LinearRegression
 import numpy as np
-
-
+import sys
 
 # Load stock data
-
 default_stock = "aot"
 
 def read_stock(name):

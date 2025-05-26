@@ -24,20 +24,21 @@ def read_stock(name):
             hist_reset['Date'] = hist_reset['Date'].dt.strftime('%y/%m/%d')
 
             # Calculate linear regression (trend) for 'Close'
-
-            # Prepare data for regression
             X = np.arange(len(hist_reset)).reshape(-1, 1)
             y = hist_reset['Close'].to_numpy()
             model = LinearRegression()
             model.fit(X, y)
-            trend = model.predict(X)
-            hist_reset['Trend'] = trend
+            linearreg = model.predict(X)
+            hist_reset['LinearReg'] = linearreg
 
             # Calculate average price
             hist_reset['Avg_Close'] = hist_reset['Close'].expanding().mean()
 
+            # Calculate exponential moving average (EMA)
+            hist_reset['EMA_Close'] = hist_reset['Close'].ewm(span=10, adjust=False).mean()
+
             # Save to CSV
-            hist_reset[['Date', 'Close', 'Trend', 'Avg_Close']].to_csv("Stock-results.csv", index=False)
+            hist_reset[['Date', 'Close', 'LinearReg', 'Avg_Close', 'EMA_Close']].to_csv("Stock-results.csv", index=False)
             df = pd.read_csv("Stock-results.csv")
         return stock.info
         
@@ -78,8 +79,17 @@ if st.session_state.show_graph:
         if 'Date' in df.columns:
             df_sorted = df.sort_values('Date')
             df_sorted = df_sorted.set_index('Date')
-            st.write("Line chart for price and linear trends")
-            st.line_chart(df_sorted[numeric_cols])
+            st.write("Select Y data to show on the graph:")
+            # Multiselect for Y columns
+            selected_cols = st.multiselect(
+            "Select Y columns", 
+            options=list(numeric_cols), 
+            default=list(numeric_cols)
+            )
+            if selected_cols:
+                st.line_chart(df_sorted[selected_cols]) 
+            else:
+                st.write("Please select at least one Y column to display.")
         else:
             st.write("Column 'Date' not found. Showing default line chart.")
             st.line_chart(df[numeric_cols])

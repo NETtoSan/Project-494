@@ -50,7 +50,7 @@ def read_stock(name):
 stock_info = read_stock(default_stock)
 
 if stock_info is not None:
-    st.title(stock_info.get('longName', default_stock.upper()))
+    st.title(f"{stock_info.get('longName', default_stock.upper())} (THB {stock_info.get('currentPrice', '')})")
 else:
     st.title(f"Stock: {default_stock.upper()} (info unavailable)")
 
